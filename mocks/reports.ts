@@ -1,0 +1,192 @@
+import type { Report } from "../types/api";
+
+export const MOCK_REPORT: Report = {
+  id: "rep_123abc456def",
+  labName: "Thyrocare Technologies Limited",
+  reportDate: new Date().toISOString(),
+  patientName: "Rahul Sharma",
+  summaryText: "Your report is generally healthy, with most values across your liver, kidney, and blood cell counts falling within normal ranges. However, there are three areas to pay attention to: your Vitamin D is quite low, indicating a deficiency common in urban Indian lifestyles. Your Thyroid Stimulating Hormone (TSH) is slightly elevated, suggesting an underactive thyroid. Lastly, your HbA1c is borderline, putting you in the pre-diabetic range.",
+  createdAt: new Date().toISOString(),
+  values: [
+    {
+      id: "val_001",
+      name: "25-OH Vitamin D (TOTAL)",
+      value: 12.5,
+      unit: "ng/mL",
+      referenceRangeLow: 30,
+      referenceRangeHigh: 100,
+      flag: "low",
+      category: "Vitamins",
+      interpretation: "This is significantly below the normal range, indicating a severe Vitamin D deficiency. This is very common in Indian cities due to limited sun exposure and predominantly vegetarian diets. Low levels can lead to bone pain, fatigue, and muscle weakness.",
+      questionsForDoctor: ["Would you recommend a weekly high-dose supplement (like a 60K softgel) or daily drops?", "Should I get a bone density test as well?"]
+    },
+    {
+      id: "val_002",
+      name: "Thyroid Stimulating Hormone (TSH)",
+      value: 6.2,
+      unit: "µIU/mL",
+      referenceRangeLow: 0.3,
+      referenceRangeHigh: 5.5,
+      flag: "high",
+      category: "Thyroid Profile",
+      interpretation: "Your TSH is slightly elevated. The brain releases TSH to tell the thyroid to make more hormones; high TSH usually means your thyroid is underactive (hypothyroidism). This can cause tiredness, weight gain, and feeling cold.",
+      questionsForDoctor: ["Is this level high enough to require daily medication like Thyroxine?", "Should we test Free T3 and T4 levels to get a clearer picture?"]
+    },
+    {
+      id: "val_003",
+      name: "HbA1c (Glycosylated Hemoglobin)",
+      value: 6.0,
+      unit: "%",
+      referenceRangeLow: 4.0,
+      referenceRangeHigh: 5.6,
+      flag: "high",
+      category: "Diabetes Profile",
+      interpretation: "An HbA1c of 6.0% means you are in the prediabetic range (5.7% - 6.4%). This is a warning sign that your average blood sugar over the last 3 months is higher than normal. The good news is that prediabetes can often be reversed with diet and exercise.",
+      questionsForDoctor: ["Do I need to start any medication like Metformin right now, or can we try lifestyle changes first?", "How often should I re-test my HbA1c to track progress?"]
+    },
+    {
+      id: "val_004",
+      name: "Fasting Blood Sugar (Glucose)",
+      value: 105,
+      unit: "mg/dL",
+      referenceRangeLow: 70,
+      referenceRangeHigh: 100,
+      flag: "high",
+      category: "Diabetes Profile",
+      interpretation: "Your fasting blood sugar is slightly outside the normal range. Combined with your HbA1c, this confirms you are prediabetic.",
+      questionsForDoctor: ["Should I completely cut out sugar and jaggery from my chai?", "Is walking 30 minutes a day enough to lower this?"]
+    },
+    {
+      id: "val_005",
+      name: "Hemoglobin",
+      value: 14.5,
+      unit: "g/dL",
+      referenceRangeLow: 13.0,
+      referenceRangeHigh: 17.0,
+      flag: "normal",
+      category: "Complete Blood Count (CBC)",
+      interpretation: "Your hemoglobin is perfectly normal. This means your blood has a good capacity to carry oxygen around your body.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_006",
+      name: "Total Cholesterol",
+      value: 185,
+      unit: "mg/dL",
+      referenceRangeLow: 0,
+      referenceRangeHigh: 200,
+      flag: "normal",
+      category: "Lipid Profile",
+      interpretation: "Your total cholesterol is well within the healthy range.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_007",
+      name: "Triglycerides",
+      value: 130,
+      unit: "mg/dL",
+      referenceRangeLow: 0,
+      referenceRangeHigh: 150,
+      flag: "normal",
+      category: "Lipid Profile",
+      interpretation: "Your triglycerides (fat in the blood) are normal.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_008",
+      name: "HDL Cholesterol",
+      value: 55,
+      unit: "mg/dL",
+      referenceRangeLow: 40,
+      referenceRangeHigh: 60,
+      flag: "normal",
+      category: "Lipid Profile",
+      interpretation: "Your 'good' cholesterol is in a healthy range.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_009",
+      name: "LDL Cholesterol",
+      value: 104,
+      unit: "mg/dL",
+      referenceRangeLow: 0,
+      referenceRangeHigh: 130,
+      flag: "normal",
+      category: "Lipid Profile",
+      interpretation: "Your 'bad' cholesterol is within desirable limits.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_010",
+      name: "SGPT (ALT)",
+      value: 32,
+      unit: "U/L",
+      referenceRangeLow: 0,
+      referenceRangeHigh: 55,
+      flag: "normal",
+      category: "Liver Function Test (LFT)",
+      interpretation: "This liver enzyme is normal, indicating no active liver inflammation or damage.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_011",
+      name: "SGOT (AST)",
+      value: 28,
+      unit: "U/L",
+      referenceRangeLow: 5,
+      referenceRangeHigh: 34,
+      flag: "normal",
+      category: "Liver Function Test (LFT)",
+      interpretation: "This liver enzyme is normal, suggesting good liver health.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_012",
+      name: "Serum Creatinine",
+      value: 0.9,
+      unit: "mg/dL",
+      referenceRangeLow: 0.7,
+      referenceRangeHigh: 1.3,
+      flag: "normal",
+      category: "Kidney Function Test (KFT)",
+      interpretation: "Serum creatinine is a waste product filtered by the kidney. Your normal levels mean your kidneys are filtering blood effectively.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_013",
+      name: "Blood Urea Nitrogen (BUN)",
+      value: 14,
+      unit: "mg/dL",
+      referenceRangeLow: 7,
+      referenceRangeHigh: 20,
+      flag: "normal",
+      category: "Kidney Function Test (KFT)",
+      interpretation: "BUN is normal. High BUN can indicate poor kidney function or dehydration, so a normal value is good.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_014",
+      name: "Vitamin B12",
+      value: 350,
+      unit: "pg/mL",
+      referenceRangeLow: 211,
+      referenceRangeHigh: 911,
+      flag: "normal",
+      category: "Vitamins",
+      interpretation: "Your B12 levels are on the lower side of normal but still within the acceptable range.",
+      questionsForDoctor: []
+    },
+    {
+      id: "val_015",
+      name: "Total Leukocyte Count (TLC)",
+      value: 7500,
+      unit: "cells/cumm",
+      referenceRangeLow: 4000,
+      referenceRangeHigh: 10000,
+      flag: "normal",
+      category: "Complete Blood Count (CBC)",
+      interpretation: "Your overall white blood cell count is totally normal. This means your immune system is not currently fighting off any major bacterial infections.",
+      questionsForDoctor: []
+    }
+  ]
+};
