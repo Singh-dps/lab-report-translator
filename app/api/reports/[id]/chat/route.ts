@@ -20,7 +20,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   try {
     const { content } = await req.json();
 
-    if (!process.env.DATABASE_URL || !process.env.XAI_API_KEY) {
+    if (!process.env.DATABASE_URL || !process.env.GROQ_API_KEY) {
        return NextResponse.json({ 
          message: { 
            id: "mock_new", 

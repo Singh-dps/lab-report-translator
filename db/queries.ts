@@ -1,6 +1,6 @@
 import { db } from "./index";
 import { reports, values, messages } from "./schema";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 import type { Report, LabValue, ChatMessage } from "@/types/api";
 
 type InsertReport = typeof reports.$inferInsert;
@@ -8,16 +8,27 @@ type InsertValue = typeof values.$inferInsert;
 type InsertMessage = typeof messages.$inferInsert;
 
 export async function createReportWithValues(reportData: InsertReport, valuesData: Omit<InsertValue, "reportId">[]) {
-  return await db.transaction(async (tx) => {
-    const [newReport] = await tx.insert(reports).values(reportData).returning();
-    
-    if (valuesData.length > 0) {
-      const valuesToInsert = valuesData.map(v => ({ ...v, reportId: newReport.id }));
-      await tx.insert(values).values(valuesToInsert);
-    }
-    
-    return newReport.id;
-  });
+  // neon-http does not support transactions, so inserts run sequentially.
+  const [newReport] = await db.insert(reports).values(reportData).returning();
+
+  if (valuesData.length > 0) {
+    const valuesToInsert = valuesData.map(v => ({ ...v, reportId: newReport.id }));
+    await db.insert(values).values(valuesToInsert);
+  }
+
+  return newReport.id;
+}
+
+export async function getReportsByUserId(userId: string): Promise<Omit<Report, 'values'>[]> {
+  const rs = await db.select().from(reports).where(eq(reports.userId, userId)).orderBy(desc(reports.createdAt));
+  return rs.map(r => ({
+    id: r.id,
+    labName: r.labName,
+    reportDate: r.reportDate.toISOString(),
+    patientName: r.patientName,
+    summaryText: r.summaryText,
+    createdAt: r.createdAt.toISOString()
+  }));
 }
 
 export async function getReportById(id: string): Promise<Report | null> {

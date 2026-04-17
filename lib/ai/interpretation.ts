@@ -1,10 +1,11 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import type { LabValue } from "@/types/api";
 
-const openai = new OpenAI({
-  apiKey: process.env.XAI_API_KEY || "mock-key",
-  baseURL: "https://api.x.ai/v1",
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || "mock-key",
 });
+
+const TEXT_MODEL = "qwen/qwen3-32b";
 
 const INTERPRETATION_PROMPT = `
 You are an empathetic, culturally aware medical translator for Indian patients. Your goal is to explain lab results.
@@ -30,32 +31,35 @@ Rules:
 5. For abnormal (high/low) values, provide deeper context and 1-2 questions for the doctor.
 `;
 
+function stripReasoning(text: string): string {
+  return text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+}
+
+function stripCodeFence(text: string): string {
+  return text.replace(/^```(json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+}
+
 export async function generateInterpretations(values: Partial<LabValue>[]) {
-  if (!process.env.XAI_API_KEY) {
-    throw new Error("No XAI API key found");
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error("No Groq API key found");
   }
 
-  const response = await openai.chat.completions.create({
-    model: "grok-2-latest",
-    temperature: 0.2, // slight creativity for natural language
+  const response = await groq.chat.completions.create({
+    model: TEXT_MODEL,
+    temperature: 0.2,
+    reasoning_effort: "none",
     messages: [
-      {
-        role: "system",
-        content: INTERPRETATION_PROMPT,
-      },
-      {
-        role: "user",
-        content: JSON.stringify(values),
-      },
+      { role: "system", content: INTERPRETATION_PROMPT },
+      { role: "user", content: JSON.stringify(values) },
     ],
-  });
+  } as any);
 
   try {
-    const rawText = response.choices[0].message?.content?.trim() || "";
-    const jsonStr = rawText.replace(/^```(json)?\n?/i, "").replace(/\n?```$/i, "");
-    return JSON.parse(jsonStr);
+    const rawText = response.choices[0].message?.content ?? "";
+    const cleaned = stripCodeFence(stripReasoning(rawText));
+    return JSON.parse(cleaned);
   } catch (e) {
-    console.error("Failed to parse Grok interpretation response", e);
+    console.error("Failed to parse interpretation response", e);
     throw new Error("Failed to parse interpretation results");
   }
 }

@@ -1,14 +1,13 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import type { Report, ChatMessage } from "@/types/api";
 
-const openai = new OpenAI({
-  apiKey: process.env.XAI_API_KEY || "mock-key",
-  baseURL: "https://api.x.ai/v1",
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || "mock-key",
 });
 
 export async function handleChatMessage(report: Report, messageHistory: ChatMessage[], newContent: string) {
-  if (!process.env.XAI_API_KEY) {
-    throw new Error("No XAI API key found");
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error("No Groq API key found");
   }
 
   const systemPrompt = `
@@ -38,11 +37,13 @@ Rules:
 
   messages.push({ role: "user", content: newContent });
 
-  const response = await openai.chat.completions.create({
-    model: "grok-2-latest",
+  const response = await groq.chat.completions.create({
+    model: "qwen/qwen3-32b",
     messages,
     max_tokens: 1000,
-  });
+    reasoning_effort: "none",
+  } as any);
 
-  return response.choices[0].message?.content || "I'm sorry, I couldn't generate a response.";
+  const raw = response.choices[0].message?.content || "I'm sorry, I couldn't generate a response.";
+  return raw.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
 }
